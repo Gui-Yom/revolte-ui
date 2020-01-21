@@ -4,7 +4,8 @@ import m from "mithril";
 import $ from "jquery"
 import {ErrorView} from "./errorview"
 
-import "../favicon.ico"
+//import "bootstrap"
+import "../scss/main.scss"
 
 window.mountApp = (threadId, viewerId, threadType) => {
 
