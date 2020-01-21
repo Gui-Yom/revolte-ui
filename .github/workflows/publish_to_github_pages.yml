@@ -1,0 +1,27 @@
+name: Build and publish to github pages
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2.0.0
+      - name: Build app bundle
+        uses: Borales/actions-yarn@v2.1.0
+        with:
+          cmd: run build --mode=production --env.pageId="2608749976019869" --env.apiUrl="https://revolte.herokuapp.com"
+      - name: Deploy to GitHub pages
+        if: success()
+        uses: crazy-max/ghaction-github-pages@v1.2.5
+        with:
+          target_branch: gh-pages
+          build_dir: public
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
