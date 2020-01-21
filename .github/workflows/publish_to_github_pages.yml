@@ -13,6 +13,10 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2.0.0
+      - name: Install dependencies
+        uses: Borales/actions-yarn@v2.1.0
+        with:
+          cmd: install
       - name: Build app bundle
         uses: Borales/actions-yarn@v2.1.0
         with:
