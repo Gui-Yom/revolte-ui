@@ -1,9 +1,12 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 module.exports = (env) => {
-    console.log("Page ID: " + env.pageId);
-    console.log("API Url: " + env.apiUrl);
+    const pageId = (env && env.pageId) || "123456789";
+    const apiUrl = (env && env.apiUrl) || "http://localhost:5000";
+    console.log("Page ID: " + pageId);
+    console.log("API Url: " + apiUrl);
     return {
         entry: "./src/index.js",
         devServer: {
@@ -61,12 +64,15 @@ module.exports = (env) => {
                             files: assets,
                             options
                         },
-                        "pageId": env.pageId,
-                        "apiUrl": env.apiUrl
+                        "pageId": pageId,
+                        "apiUrl": apiUrl
                     };
                 },
                 template: "./index.hbs"
-            })
+            }),
+            new CopyWebpackPlugin([
+                {from: "./favicon.ico", to: "favicon.ico"}
+            ])
         ]
     }
 };

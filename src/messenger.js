@@ -7,7 +7,7 @@ export function exit() {
     });
 };
 
-export let exitBtn = {
+export const exitBtn = {
     view: () =>
         m("button", {
             onclick: exit,
