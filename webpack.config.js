@@ -68,10 +68,11 @@ module.exports = (env) => {
                         "apiUrl": apiUrl
                     };
                 },
-                template: "./index.hbs"
+                template: "./views/index.hbs"
             }),
             new CopyWebpackPlugin([
-                {from: "./favicon.ico", to: "favicon.ico"}
+                {from: "./favicon.ico", to: "favicon.ico"},
+                {from: "./views/legal.html", to: "legal.html"}
             ])
         ]
     }

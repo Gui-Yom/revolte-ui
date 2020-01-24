@@ -13,5 +13,5 @@ export const exitBtn = {
             onclick: exit,
             type: "button",
             class: "btn btn-secondary"
-        }, "Exit")
+        }, "Quitter")
 };
