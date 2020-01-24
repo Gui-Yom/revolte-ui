@@ -30,7 +30,10 @@ window.mountApp = (threadId, viewerId, threadType, _apiHost) => {
         state.viewerid = viewerId;
         state.threadType = threadType;
 
-        WS.open("wss://" + apiHost + "/game");
+        WS.open("wss://" + apiHost + "/game", () => {
+        }, () => {
+            showError("Unable to connect to websocket endpoint")
+        });
 
         WS.request("game_exists?|" + threadId, e => {
             if (e.data === "true") {
@@ -61,18 +64,6 @@ function startAction(action) {
     if (action === "create") {
         m.route.set("/newgame");
     } else if (action === "join") {
-        m.request({
-            method: "POST",
-            url: apiHost + "/game/:threadId/join",
-            params: {threadId: state.threadid, playerId: state.viewerid},
-            async: false
-        }).then(data => {
-            state.game.players.add(data);
-            m.route.set("/play");
-        }, err => {
-            console.log(err);
-        });
-
         WS.request("game_join!|" + state.threadid + "|" + state.viewerid, e => {
             if (e.data === "ok") {
                 //state.game.players.add(data);
