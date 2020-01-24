@@ -4,7 +4,7 @@ const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 module.exports = (env) => {
     const pageId = (env && env.pageId) || "123456789";
-    const apiHost = (env && env.apiUrl) || "127.0.0.1";
+    const apiHost = (env && env.apiHost) || "127.0.0.1";
     console.log("Page ID: " + pageId);
     console.log("API host: " + apiHost);
     return {
