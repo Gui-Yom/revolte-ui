@@ -3,54 +3,49 @@
 import m from "mithril";
 import $ from "jquery"
 import {exitBtn} from "./messenger";
+import {WS} from "./socket"
 
 import "../scss/main.scss"
 
 const root = $("#app")[0];
 
-export let apiUrl;
+export let apiHost;
 
-window.mountApp = (threadId, viewerId, threadType, apiUrl) => {
+window.mountApp = (threadId, viewerId, threadType, _apiHost) => {
 
     m.route(root, "/loading", {
         "/loading": LoadingView,
         "/start/:action": StartView,
         "/newgame": NewGameView,
-        //"/error": ErrorView,
         "/play": PlayView
     });
 
     if (viewerId == null) {
-        m.mount(root, {
-            view: () => m(ErrorView, {
-                error: "Impossible d'initialiser le contexte messenger: " + threadId
-            })
-        });
+        showError("Impossible d'initialiser le contexte messenger: " + threadId)
+    } else if (threadType !== "GROUP") {
+        showError("Les parties de Révolté ne se joue que dans des conversations de groupe (min 9 joueurs)")
     } else {
-        this.apiUrl = apiUrl;
+        apiHost = _apiHost;
         state.threadid = threadId;
         state.viewerid = viewerId;
         state.threadType = threadType;
 
-        m.request({
-            method: "GET",
-            url: apiUrl + "/game/:threadId",
-            params: {threadId: threadId},
-            async: false
-        }).then(data => {
-            console.log(data);
-            state.phase = data.phase;
-            if (data.phase === "join") {
-                if (data.players.includes(viewerId))
-                    m.route.set("/play");
-                else
-                    m.route.set("/start/:action", {action: "join"});
-            }
-        }, err => {
-            if (err.code === 404)
+        WS.open("wss://" + apiHost + "/game");
+
+        WS.request("game_exists?|" + threadId, e => {
+            if (e.data === "true") {
+
+                WS.request("game_info?|" + threadId, e => {
+                    state.game = JSON.parse(e.data);
+                    if (gameHasPlayer(viewerId))
+                        m.route.set("/play");
+                    else if (state.game.phase === "JOIN")
+                        m.route.set("/start/:action", {action: "join"});
+                });
+
+            } else {
                 m.route.set("/start/:action", {action: "create"});
-            else
-                console.log(err);
+            }
         });
     }
 };
@@ -59,8 +54,7 @@ const state = {
     viewerid: null,
     threadid: null,
     threadType: null,
-    phase: null,
-    turn: null
+    game: null
 };
 
 function startAction(action) {
@@ -69,13 +63,21 @@ function startAction(action) {
     } else if (action === "join") {
         m.request({
             method: "POST",
-            url: apiUrl + "/game/:threadId/join",
+            url: apiHost + "/game/:threadId/join",
             params: {threadId: state.threadid, playerId: state.viewerid},
             async: false
         }).then(data => {
+            state.game.players.add(data);
             m.route.set("/play");
         }, err => {
             console.log(err);
+        });
+
+        WS.request("game_join!|" + state.threadid + "|" + state.viewerid, e => {
+            if (e.data === "ok") {
+                //state.game.players.add(data);
+                m.route.set("/play");
+            }
         });
     }
 }
@@ -110,3 +112,19 @@ const ErrorView = {
 const LoadingView = {
     view: () => m("loading.lds-dual-ring")
 };
+
+function showError(err) {
+    m.mount(root, {
+        view: () => m(ErrorView, {
+            error: err
+        })
+    });
+}
+
+function gameHasPlayer(playerId) {
+    for (const player of state.game.players) {
+        if (player.playerId === playerId)
+            return true;
+    }
+    return false;
+}

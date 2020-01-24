@@ -27,7 +27,7 @@
         MessengerExtensions.getContext(
                 "{{ pageId }}",
                 function success(context) {
-                    window.mountApp(context.tid, context.psid, context.thread_type, "{{ apiUrl }}");
+                    window.mountApp(context.tid, context.psid, context.thread_type, "{{ apiHost }}");
                 },
                 function error(e) {
                     window.mountApp(e)

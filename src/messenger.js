@@ -1,7 +1,7 @@
 import m from "mithril";
 
 export function exit() {
-    MessengerExtensions.requestCloseBrowser(function success() {
+    window.MessengerExtensions.requestCloseBrowser(function success() {
     }, function error(err) {
         console.log(err)
     });
@@ -15,3 +15,7 @@ export const exitBtn = {
             class: "btn btn-secondary"
         }, "Quitter")
 };
+
+export function sendMsg(msg) {
+
+}
