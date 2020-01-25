@@ -3,7 +3,7 @@
 import m from "mithril";
 import $ from "jquery"
 import {exitBtn} from "./messenger";
-import {WS} from "./socket"
+import WS from "./socket"
 
 import "../scss/main.scss"
 
@@ -111,7 +111,7 @@ function showError(err) {
 
 function gameHasPlayer(playerId) {
     for (const player of state.game.players) {
-        if (player.playerId === playerId)
+        if (player.hasOwnProperty(playerId))
             return true;
     }
     return false;

@@ -1,14 +1,16 @@
-export const WS = {
+const WS = {
     socket: null,
-    func: e => console.log("Unhandled msg !"),
+    func: () => console.log("Unhandled msg !"),
     open: (url, onOpen, onError) => {
-        this.socket = new WebSocket(url);
-        this.socket.onopen = onOpen;
-        this.socket.onerror = onError;
-        this.socket.onmessage = e => this.func(e);
+        WS.socket = new WebSocket(url);
+        WS.socket.onopen = onOpen;
+        WS.socket.onerror = onError;
+        WS.socket.onmessage = e => WS.func(e);
     },
     request: (msg, callback) => {
-        this.func = callback;
-        this.socket.send(msg);
+        WS.func = callback;
+        WS.socket.send(msg);
     }
 };
+
+module.exports = WS;
