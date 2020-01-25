@@ -8,6 +8,7 @@ import WS from "./socket"
 import "../scss/main.scss"
 
 const root = $("#app")[0];
+const debuggerComp = $("#debugger")[0];
 
 export let apiHost;
 
@@ -19,6 +20,7 @@ window.mountApp = (threadId, viewerId, threadType, _apiHost) => {
         "/newgame": NewGameView,
         "/play": PlayView
     });
+    debuggerComp.text("Mounted app: " + viewerId);
 
     if (viewerId == null) {
         showError("Impossible d'initialiser le contexte messenger: " + threadId)

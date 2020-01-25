@@ -9,7 +9,7 @@
 </head>
 <body>
 <noscript>This is so sad. Javascript n'est pas activé :(</noscript>
-<p>Hey</p>
+<p id="debugger">Hey</p>
 <div id="app"></div>
 
 <script>
@@ -20,7 +20,7 @@
         }
         js = d.createElement(s);
         js.id = id;
-        js.src = "https://connect.facebook.net/en_US/messenger.Extensions.js";
+        js.src = "//connect.facebook.net/en_US/messenger.Extensions.js";
         fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'Messenger'));
 
