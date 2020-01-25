@@ -31,24 +31,21 @@ window.mountApp = (threadId, viewerId, threadType, _apiHost) => {
         state.threadType = threadType;
 
         WS.open("wss://" + apiHost + "/game", () => {
+            WS.request("game_exists?|" + threadId, e => {
+                if (e.data === "true") {
+                    WS.request("game_info?|" + threadId, e => {
+                        state.game = JSON.parse(e.data);
+                        if (gameHasPlayer(viewerId))
+                            m.route.set("/play");
+                        else if (state.game.phase === "JOIN")
+                            m.route.set("/start/:action", {action: "join"});
+                    });
+                } else {
+                    m.route.set("/start/:action", {action: "create"});
+                }
+            });
         }, () => {
             showError("Unable to connect to websocket endpoint")
-        });
-
-        WS.request("game_exists?|" + threadId, e => {
-            if (e.data === "true") {
-
-                WS.request("game_info?|" + threadId, e => {
-                    state.game = JSON.parse(e.data);
-                    if (gameHasPlayer(viewerId))
-                        m.route.set("/play");
-                    else if (state.game.phase === "JOIN")
-                        m.route.set("/start/:action", {action: "join"});
-                });
-
-            } else {
-                m.route.set("/start/:action", {action: "create"});
-            }
         });
     }
 };
