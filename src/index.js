@@ -44,8 +44,8 @@ window.mountApp = (threadId, viewerId, threadType, _apiHost) => {
                     m.route.set("/start/:action", {action: "create"});
                 }
             });
-        }, () => {
-            showError("Unable to connect to websocket endpoint")
+        }, (e) => {
+            showError("Unable to connect to websocket endpoint: " + e)
         });
     }
 };
