@@ -14,12 +14,6 @@ export let apiHost;
 
 window.mountApp = (threadId, viewerId, threadType, _apiHost) => {
 
-    m.route(root, "/loading", {
-        "/loading": LoadingView,
-        "/start/:action": StartView,
-        "/newgame": NewGameView,
-        "/play": PlayView
-    });
     debuggerComp.text("Mounted app: " + viewerId);
 
     if (viewerId == null) {
@@ -48,6 +42,13 @@ window.mountApp = (threadId, viewerId, threadType, _apiHost) => {
             });
         }, (e) => {
             showError("Unable to connect to websocket endpoint: " + e)
+        });
+
+        m.route(root, "/loading", {
+            "/loading": LoadingView,
+            "/start/:action": StartView,
+            "/newgame": NewGameView,
+            "/play": PlayView
         });
     }
 };
