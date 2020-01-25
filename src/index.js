@@ -4,17 +4,41 @@ import m from "mithril";
 import $ from "jquery"
 import {exitBtn} from "./messenger";
 import WS from "./socket"
+import "socket.io-client"
 
 import "../scss/main.scss"
 
 const root = $("#app")[0];
 const debuggerComp = $("#debugger")[0];
 
-export let apiHost;
+let apiHost;
 
-window.mountApp = (threadId, viewerId, threadType, _apiHost) => {
+window.extAsyncInit = () => {
+    window.MessengerExtensions.getContext(
+        "2608749976019869",
+        function success(context) {
+            mountApp(context.tid, context.psid, context.thread_type, "revolte.herokuapp.com");
+        },
+        function error(e) {
+            mountApp(e)
+        });
+};
 
-    debuggerComp.text("Mounted app: " + viewerId);
+const state = {
+    viewerid: null,
+    threadid: null,
+    threadType: null,
+    game: null
+};
+
+function mountApp(threadId, viewerId, threadType, _apiHost) {
+
+    m.route(root, "/loading", {
+        "/loading": LoadingView,
+        "/start/:action": StartView,
+        "/newgame": NewGameView,
+        "/play": PlayView
+    });
 
     if (viewerId == null) {
         showError("Impossible d'initialiser le contexte messenger: " + threadId)
@@ -43,22 +67,8 @@ window.mountApp = (threadId, viewerId, threadType, _apiHost) => {
         }, (e) => {
             showError("Unable to connect to websocket endpoint: " + e)
         });
-
-        m.route(root, "/loading", {
-            "/loading": LoadingView,
-            "/start/:action": StartView,
-            "/newgame": NewGameView,
-            "/play": PlayView
-        });
     }
-};
-
-const state = {
-    viewerid: null,
-    threadid: null,
-    threadType: null,
-    game: null
-};
+}
 
 function startAction(action) {
     if (action === "create") {
@@ -101,7 +111,7 @@ const ErrorView = {
 };
 
 const LoadingView = {
-    view: () => m("p", "Loading")
+    view: () => m("div.loading-div", m("div.lds-dual-ring"))
 };
 
 function showError(err) {

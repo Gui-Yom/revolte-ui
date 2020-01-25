@@ -1,13 +1,7 @@
 const path = require("path");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 
-module.exports = (env) => {
-    const pageId = (env && env.pageId) || "123456789";
-    const apiHost = (env && env.apiHost) || "127.0.0.1";
-    console.log("Page ID: " + pageId);
-    console.log("API host: " + apiHost);
-    return {
+module.exports = {
         entry: "./src/index.js",
         devServer: {
             contentBase: "public",
@@ -52,28 +46,10 @@ module.exports = (env) => {
             ]
         },
         plugins: [
-            new HtmlWebpackPlugin({
-                // NOTE if you pass plain object it will be passed as is. no default values there, so be aware!
-                // for implementation detail, please see index.js and search for "userOptions" variable
-                templateParameters: (compilation, assets, assetTags, options) => {
-                    return {
-                        compilation,
-                        webpackConfig: compilation.options,
-                        htmlWebpackPlugin: {
-                            tags: assetTags,
-                            files: assets,
-                            options
-                        },
-                        "pageId": pageId,
-                        "apiHost": apiHost
-                    };
-                },
-                template: "./views/index.hbs"
-            }),
             new CopyWebpackPlugin([
                 {from: "./favicon.ico", to: "favicon.ico"},
-                {from: "./views/legal.html", to: "legal.html"}
+                {from: "./views/legal.html", to: "legal.html"},
+                {from: "./views/index.html", to: "index.html"}
             ])
         ]
-    }
 };

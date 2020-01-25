@@ -23,17 +23,7 @@
         js.src = "//connect.facebook.net/en_US/messenger.Extensions.js";
         fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'Messenger'));
-
-    window.extAsyncInit = () => {
-        MessengerExtensions.getContext(
-                "{{ pageId }}",
-                function success(context) {
-                    window.mountApp(context.tid, context.psid, context.thread_type, "{{ apiHost }}");
-                },
-                function error(e) {
-                    window.mountApp(e)
-                });
-    };
 </script>
+<script src="./bundle.js"></script>
 </body>
 </html>
