@@ -9,6 +9,7 @@
 </head>
 <body>
 <noscript>This is so sad. Javascript n'est pas activé :(</noscript>
+<p>Hey</p>
 <div id="app"></div>
 
 <script>
@@ -23,7 +24,7 @@
         fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'Messenger'));
 
-    window.extAsyncInit = function () {
+    window.extAsyncInit = () => {
         MessengerExtensions.getContext(
                 "{{ pageId }}",
                 function success(context) {

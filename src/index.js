@@ -98,7 +98,7 @@ const ErrorView = {
 };
 
 const LoadingView = {
-    view: () => m("loading.lds-dual-ring")
+    view: () => m("div.lds-dual-ring")
 };
 
 function showError(err) {
