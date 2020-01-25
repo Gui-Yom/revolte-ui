@@ -100,7 +100,7 @@ const ErrorView = {
 };
 
 const LoadingView = {
-    view: () => m("div.lds-dual-ring")
+    view: () => m("p", "Loading")
 };
 
 function showError(err) {
