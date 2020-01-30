@@ -2,9 +2,7 @@
 @import "~bootstrap/scss/bootstrap";
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap');
 
-$dual_ring_color: #FADF96;
-
-p, h1, button {
+p, h1, button, span, label {
   font-family: 'Open Sans', sans-serif;
 }
 
@@ -15,7 +13,7 @@ p, h1, button {
   z-index: 100;
 }
 
-.loading-div-inside {
+.loading {
   width: 80px;
   height: 80px;
   position: absolute;
@@ -25,42 +23,19 @@ p, h1, button {
   margin-top: -40px;
 }
 
-.loading-div-inside:after {
+.loading:after {
   content: " ";
   display: block;
   width: 64px;
   height: 64px;
   margin: 8px;
   border-radius: 50%;
-  border: 6px solid $dual_ring_color;
-  border-color: $dual_ring_color transparent $dual_ring_color transparent;
-  animation: lds-dual-ring 1.2s linear infinite;
+  border: 6px solid $teal;
+  border-color: $teal transparent $teal transparent;
+  animation: loading-spin 1.2s linear infinite;
 }
 
-.lds-dual-ring {
-  display: inline-block;
-  width: 80px;
-  height: 80px;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  margin-left: -50px;
-  margin-top: -50px;
-}
-
-.lds-dual-ring:after {
-  content: " ";
-  display: block;
-  width: 64px;
-  height: 64px;
-  margin: 8px;
-  border-radius: 50%;
-  border: 6px solid $dual_ring_color;
-  border-color: $dual_ring_color transparent $dual_ring_color transparent;
-  animation: lds-dual-ring 1.2s linear infinite;
-}
-
-@keyframes lds-dual-ring {
+@keyframes loading-spin {
   0% {
     transform: rotate(0deg);
   }
@@ -69,3 +44,8 @@ p, h1, button {
   }
 }
 
+#newgame-title {
+  font-size: 36px;
+  margin-bottom: 20px;
+  margin-top: 10px;
+}

@@ -5,7 +5,7 @@ import $ from "jquery";
 const MessengerExt = {
     loaded: false,
     load: (pageId, success, error) => {
-        $.getScript("https://connect.facebook.net/en_US/messenger.Extensions.js", () => {
+        $.getScript("//connect.facebook.net/en_US/messenger.Extensions.js", () => {
             MessengerExt.loaded = true;
             console.log("Loaded Messenger Extensions !");
             window.MessengerExtensions.getContext(pageId, success, error);

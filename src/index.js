@@ -2,9 +2,11 @@
 
 import m from "mithril";
 import $ from "jquery";
+import "socket.io-client";
+
 import MessengerExt from "./messenger";
 import WS from "./socket";
-import "socket.io-client";
+import DurationPicker from "./duration-picker";
 
 import "../scss/main.scss";
 
@@ -65,29 +67,63 @@ const StartView = {
             m("h1.display-4", "Révolté"),
             m("button.btn.btn-primary.btn-block.fixed-bottom", {
                 onclick: () => startAction(vnode.attrs.action),
-                style: "height: 10%"
+                style: {height: "10%"}
             }, vnode.attrs.action === "create" ? "Nouvelle partie" : "Rejoindre la partie")
         ])
 };
 
 const NewGameView = {
-    view: () => m("p", "NewGameView")
+    pickerJoin: null,
+    pickerNight: null,
+    pickerDay: null,
+    oninit: () => {
+        NewGameView.pickerJoin = new DurationPicker("duration_join");
+        NewGameView.pickerNight = new DurationPicker("duration_night");
+        NewGameView.pickerDay = new DurationPicker("duration_day");
+    },
+    view: () => m("root", [
+        m("h1#newgame-title.display-4.text-center", "Nouvelle partie"),
+        m("div", {class: "container-fluid", style: {"max-width": "320px"}},
+            m("form", {onsubmit: NewGameView.onsubmit}, [
+                m("div.form-group", [
+                    m("label[for=duration_join]", "Durée de la phase d'inscription"),
+                    NewGameView.pickerJoin.view()
+                ]),
+                m("div.form-group", [
+                    m("label[for=duration_night]", "Durée de la phase d'inscription"),
+                    NewGameView.pickerNight.view()
+                ]),
+                m("div.form-group", [
+                    m("label[for=duration_day]", "Durée de la phase d'inscription"),
+                    NewGameView.pickerDay.view()
+                ]),
+                m("button.btn.btn-primary.btn-block.btn-sm[type=submit]", "Créer")
+            ]))]),
+    onsubmit: e => {
+        e.preventDefault();
+        console.log(NewGameView.pickerJoin.value);
+        // TODO send websocket request with json
+    }
 };
 
 const PlayView = {
-    view: () => m("p", "PlayView")
+    view: () => m("p", "PlayView : " + state.threadId)
 };
 
 const ErrorView = {
     view: vnode =>
-        m("root", [
-            m("p.text-danger", vnode.attrs.error),
+        m("div", {
+            role: "alert",
+            class: "alert alert-danger"
+        }, [
+            m("h4.alert-heading", "Error"),
+            m("span", [m("strong", vnode.attrs.error), m("br")]),
             m(exitBtn)
         ])
 };
 
 const LoadingView = {
-    view: () => m("div.loading-div", m("div.loading-div-inside"))
+    view: () => m("div.loading-div", m("div.loading"))
 };
 
 const exitBtn = {
@@ -95,7 +131,7 @@ const exitBtn = {
         m("button", {
             onclick: MessengerExt.exit,
             type: "button",
-            class: "btn btn-secondary"
+            class: "btn btn-danger btn-block btn-lg"
         }, "Quitter")
 };
 
@@ -122,7 +158,7 @@ m.route(root, "/loading", {
     "/play": PlayView
 });
 
-const useMessenger = true;
+const useMessenger = false;
 
 if (useMessenger)
     MessengerExt.load("2608749976019869", (ctx) => {
