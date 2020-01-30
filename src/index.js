@@ -158,10 +158,8 @@ m.route(root, "/loading", {
     "/play": PlayView
 });
 
-const useMessenger = false;
-
-if (useMessenger)
-    MessengerExt.load("2608749976019869", (ctx) => {
+if (NODE_ENV === "production")
+    MessengerExt.load(PAGE_ID, (ctx) => {
         state.viewerId = ctx.psid;
         state.threadId = ctx.tid;
         state.threadType = ctx.thread_type;
