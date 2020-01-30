@@ -2,12 +2,10 @@
   "name": "revolte-ui",
   "version": "1.0.0",
   "description": "The web mobile frontend for the révolté game.",
-  "main": "index.js",
+  "main": "./src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack",
-    "watch": "webpack --mode=development --watch",
-    "start": "webpack-dev-server --open --mode=development"
+    "watch": "webpack-dev-server --open --mode=development"
   },
   "keywords": [],
   "repository": {
@@ -32,6 +30,7 @@
     "postcss-loader": "^3.0.0",
     "sass-loader": "^8.0.2",
     "style-loader": "^1.1.3",
+    "terser-webpack-plugin": "^2.3.3",
     "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10",
     "webpack-dev-server": "^3.10.1"

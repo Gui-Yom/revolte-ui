@@ -1,3 +1,5 @@
+"use strict";
+
 const WS = {
     socket: null,
     func: () => console.log("Unhandled msg !"),
@@ -17,4 +19,4 @@ const WS = {
     }
 };
 
-module.exports = WS;
+export default WS;

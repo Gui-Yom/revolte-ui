@@ -15,6 +15,28 @@ p, h1, button {
   z-index: 100;
 }
 
+.loading-div-inside {
+  width: 80px;
+  height: 80px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin-left: -40px;
+  margin-top: -40px;
+}
+
+.loading-div-inside:after {
+  content: " ";
+  display: block;
+  width: 64px;
+  height: 64px;
+  margin: 8px;
+  border-radius: 50%;
+  border: 6px solid $dual_ring_color;
+  border-color: $dual_ring_color transparent $dual_ring_color transparent;
+  animation: lds-dual-ring 1.2s linear infinite;
+}
+
 .lds-dual-ring {
   display: inline-block;
   width: 80px;
