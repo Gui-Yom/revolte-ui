@@ -164,6 +164,8 @@ if (NODE_ENV === "production")
         state.threadId = ctx.tid;
         state.threadType = ctx.thread_type;
         boot();
+    }, (code, msg) => {
+        showError("[" + code + "]: " + msg);
     });
 else {
     state.viewerId = "69420";

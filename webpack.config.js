@@ -62,7 +62,7 @@ module.exports = env => {
                 {from: "./views/index.html", to: "index.html"}
             ]),
             new webpack.DefinePlugin({
-                NODE_ENV: env.NODE_ENV,
+                NODE_ENV: JSON.stringify(env.NODE_ENV),
                 PAGE_ID: JSON.stringify("2608749976019869")
             })
         ]
