@@ -63,12 +63,13 @@ function startAction(action) {
 
 const StartView = {
     view: vnode =>
-        m("div.d-flex.h-100.justify-content-center.align-items-center", [
-            m("h1.display-4", "Révolté"),
+        m("root", [
+            m("h1.display-4.text-center", {style: {"margin-top": "10px"}}, "Révolté"),
             m("button.btn.btn-primary.btn-block.fixed-bottom", {
                 onclick: () => startAction(vnode.attrs.action),
                 style: {height: "10%"}
             }, vnode.attrs.action === "create" ? "Nouvelle partie" : "Rejoindre la partie")
+            // TODO afficher la liste des joueurs présents
         ])
 };
 
@@ -76,6 +77,7 @@ const NewGameView = {
     pickerJoin: null,
     pickerNight: null,
     pickerDay: null,
+    developerKey: "",
     oninit: () => {
         NewGameView.pickerJoin = new DurationPicker("duration_join");
         NewGameView.pickerNight = new DurationPicker("duration_night");
@@ -96,6 +98,21 @@ const NewGameView = {
                 m("div.form-group", [
                     m("label[for=duration_day]", "Durée de la phase d'inscription"),
                     NewGameView.pickerDay.view()
+                ]),
+                m("div.form-group", [
+                    m("label[for=developper_key]", "Clé développeur"),
+                    m("input", {
+                        id: "developper_key",
+                        class: "form-control form-control-sm",
+                        type: "password",
+                        autocomplete: "off",
+                        minLength: 6,
+                        maxLength: 6,
+                        required: true,
+                        oninput: e => {
+                            NewGameView.developerKey = e.target.value;
+                        }
+                    })
                 ]),
                 m("button.btn.btn-primary.btn-block.btn-sm[type=submit]", "Créer")
             ]))]),
