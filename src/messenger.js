@@ -1,14 +1,17 @@
-"use strict";
+//"use strict";
 
 import $ from "jquery";
 
 const MessengerExt = {
     loaded: false,
     load: (pageId, success, error) => {
-        $.getScript("//connect.facebook.net/en_US/messenger.Extensions.js", () => {
+        window.extAsyncInit = () => {
             MessengerExt.loaded = true;
             console.log("Loaded Messenger Extensions !");
             window.MessengerExtensions.getContext(pageId, success, error);
+        };
+        $.getScript("//connect.facebook.net/en_US/messenger.Extensions.js", () => {
+
         })
     },
     exit: () => {

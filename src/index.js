@@ -116,7 +116,7 @@ const ErrorView = {
             role: "alert",
             class: "alert alert-danger"
         }, [
-            m("h4.alert-heading", "Error"),
+            m("h4.alert-heading", "Erreur"),
             m("span", [m("strong", vnode.attrs.error), m("br")]),
             m(exitBtn)
         ])
@@ -158,6 +158,7 @@ m.route(root, "/loading", {
     "/play": PlayView
 });
 
+console.log(PAGE_ID);
 if (NODE_ENV === "production")
     MessengerExt.load(PAGE_ID, (ctx) => {
         state.viewerId = ctx.psid;
