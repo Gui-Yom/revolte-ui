@@ -1,7 +1,6 @@
 "use strict";
 
 import m from "mithril";
-import $ from "jquery";
 
 import MessengerExt from "./messenger";
 import API from "./api";
@@ -31,7 +30,7 @@ function boot() {
             .then(() => {
                 API.request("game_exists?" + API.sep + state.threadId)
                     .then(response0 => {
-                        if (response0 === "true") {
+                        if (response0[0] === "true") {
                             API.request("game_info?" + API.sep + state.threadId)
                                 .then(response1 => {
                                     state.game = JSON.parse(response1[0]);
