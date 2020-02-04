@@ -28,10 +28,10 @@ function boot() {
     } else {
         API.init("wss://" + state.apiHost + "/game", state.viewerId)
             .then(() => {
-                API.request("game_exists?" + API.sep + state.threadId)
+                API.request("gameExists?" + API.sep + state.threadId)
                     .then(response0 => {
                         if (response0[0] === "true") {
-                            API.request("game_info?" + API.sep + state.threadId)
+                            API.request("gameInfo?" + API.sep + state.threadId)
                                 .then(response1 => {
                                     state.game = JSON.parse(response1[0]);
                                     if (gameHasPlayer(state.viewerId))
@@ -50,6 +50,18 @@ function boot() {
             }, e => {
                 showError("Unable to connect to websocket endpoint: " + e)
             });
+        API.eventHandler = data => {
+            switch (data[0]) {
+                case "playerJoin!":
+                    if (state.game == null) {
+                        showError("wtf, received event out of nowhere")
+                    }
+                    state.game.players[data[1]] = {
+                        psid: data[1]
+                    };
+                    break;
+            }
+        }
     }
 }
 
@@ -57,10 +69,9 @@ function startAction(action) {
     if (action === "create") {
         m.route.set("/newgame");
     } else if (action === "join") {
-        API.request("game_join!" + API.sep + state.threadId + API.sep + state.viewerId)
+        API.request("joinGame!" + API.sep + state.threadId + API.sep + state.viewerId)
             .then(response => {
                 if (response === "ok") {
-                    //state.game.players.add(data);
                     m.route.set("/play");
                 }
             }, err => {
@@ -114,8 +125,8 @@ const NewGameView = {
                         class: "form-control form-control-sm",
                         type: "password",
                         autocomplete: "off",
-                        minLength: 6,
-                        maxLength: 6,
+                        minLength: 5,
+                        maxLength: 5,
                         required: true,
                         oninput: e => {
                             NewGameView.developerKey = e.target.value;
@@ -127,7 +138,7 @@ const NewGameView = {
     onsubmit: e => {
         e.preventDefault();
         console.log(NewGameView.pickerJoin.value);
-        API.request("game_create!" + API.sep + JSON.stringify({
+        API.request("gameCreate!" + API.sep + JSON.stringify({
             threadId: state.threadId,
             phasesDuration: {
                 JOIN: NewGameView.pickerJoin.value,
