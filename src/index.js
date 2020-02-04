@@ -54,7 +54,8 @@ function boot() {
             switch (data[0]) {
                 case "playerJoin!":
                     if (state.game == null) {
-                        showError("wtf, received event out of nowhere")
+                        showError("wtf, received event out of nowhere");
+                        break;
                     }
                     state.game.players[data[1]] = {
                         psid: data[1]
