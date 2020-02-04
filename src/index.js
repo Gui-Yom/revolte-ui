@@ -2,10 +2,9 @@
 
 import m from "mithril";
 import $ from "jquery";
-import "socket.io-client";
 
 import MessengerExt from "./messenger";
-import WS from "./socket";
+import API from "./api";
 import DurationPicker from "./duration-picker";
 
 import "../scss/main.scss";
@@ -28,23 +27,30 @@ function boot() {
     } else if (state.threadType !== "GROUP") {
         showError("Les parties de Révolté ne se joue que dans des conversations de groupe (min 9 joueurs)")
     } else {
-        WS.open("wss://" + state.apiHost + "/game", () => {
-            WS.request("game_exists?|" + state.threadId, e => {
-                if (e.data === "true") {
-                    WS.request("game_info?|" + state.threadId, e => {
-                        state.game = JSON.parse(e.data);
-                        if (gameHasPlayer(state.viewerId))
-                            m.route.set("/play");
-                        else if (state.game.phase === "JOIN")
-                            m.route.set("/start/:action", {action: "join"});
+        API.init("wss://" + state.apiHost + "/game", state.viewerId)
+            .then(() => {
+                API.request("game_exists?" + API.sep + state.threadId)
+                    .then(response0 => {
+                        if (response0 === "true") {
+                            API.request("game_info?" + API.sep + state.threadId)
+                                .then(response1 => {
+                                    state.game = JSON.parse(response1[0]);
+                                    if (gameHasPlayer(state.viewerId))
+                                        m.route.set("/play");
+                                    else if (state.game.phase === "JOIN")
+                                        m.route.set("/start/:action", {action: "join"});
+                                }, err => {
+                                    showError(err);
+                                });
+                        } else {
+                            m.route.set("/start/:action", {action: "create"});
+                        }
+                    }, err => {
+                        showError(err);
                     });
-                } else {
-                    m.route.set("/start/:action", {action: "create"});
-                }
+            }, e => {
+                showError("Unable to connect to websocket endpoint: " + e)
             });
-        }, (e) => {
-            showError("Unable to connect to websocket endpoint: " + e)
-        });
     }
 }
 
@@ -52,12 +58,15 @@ function startAction(action) {
     if (action === "create") {
         m.route.set("/newgame");
     } else if (action === "join") {
-        WS.request("game_join!|" + state.threadId + "|" + state.viewerId, e => {
-            if (e.data === "ok") {
-                //state.game.players.add(data);
-                m.route.set("/play");
-            }
-        });
+        API.request("game_join!" + API.sep + state.threadId + API.sep + state.viewerId)
+            .then(response => {
+                if (response === "ok") {
+                    //state.game.players.add(data);
+                    m.route.set("/play");
+                }
+            }, err => {
+                showError(err);
+            });
     }
 }
 
@@ -119,7 +128,21 @@ const NewGameView = {
     onsubmit: e => {
         e.preventDefault();
         console.log(NewGameView.pickerJoin.value);
-        // TODO send websocket request with json
+        API.request("game_create!" + API.sep + JSON.stringify({
+            threadId: state.threadId,
+            phasesDuration: [
+                {JOIN: NewGameView.pickerJoin.value},
+                {NIGHT: NewGameView.pickerNight.value},
+                {DAY: NewGameView.pickerDay.value},
+                {NIGHT_END: 15}
+            ],
+            developerKey: NewGameView.developerKey
+        })).then(response => {
+            if (response[0] === "ok")
+                m.route.set("/play");
+        }, err => {
+            showError(err);
+        })
     }
 };
 

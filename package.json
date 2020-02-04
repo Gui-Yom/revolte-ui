@@ -19,8 +19,7 @@
     "bootstrap": "^4.4.1",
     "jquery": "^3.4.1",
     "mithril": "^2.0.4",
-    "popper.js": "^1.16.0",
-    "socket.io-client": "^2.3.0"
+    "popper.js": "^1.16.0"
   },
   "devDependencies": {
     "autoprefixer": "^9.7.4",
