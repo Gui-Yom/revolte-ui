@@ -129,12 +129,12 @@ const NewGameView = {
         console.log(NewGameView.pickerJoin.value);
         API.request("game_create!" + API.sep + JSON.stringify({
             threadId: state.threadId,
-            phasesDuration: [
-                {JOIN: NewGameView.pickerJoin.value},
-                {NIGHT: NewGameView.pickerNight.value},
-                {DAY: NewGameView.pickerDay.value},
-                {NIGHT_END: 15}
-            ],
+            phasesDuration: {
+                JOIN: NewGameView.pickerJoin.value,
+                NIGHT: NewGameView.pickerNight.value,
+                DAY: NewGameView.pickerDay.value,
+                NIGHT_END: 15
+            },
             developerKey: NewGameView.developerKey
         })).then(response => {
             if (response[0] === "ok")
